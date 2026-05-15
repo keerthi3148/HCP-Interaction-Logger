@@ -1,46 +1,75 @@
-# Getting Started with Create React App
+# Frontend UI — HCP Interaction Logger
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This directory contains the user interface for the **HCP Interaction Logger**, built with **React 18**, **TypeScript**, **Redux Toolkit**, and **TailwindCSS**. It implements a beautiful, highly polished split-screen design tailored for field sales representatives logging post-visit notes.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## Architectural Philosophy: AI-Controlled UI
 
-### `npm start`
+Unlike standard web forms where users interact directly with input fields, this UI is **entirely AI-controlled**:
+- **Disabled State**: Every single input field, dropdown, and checkbox in the form panel is disabled. Direct manual data entry is restricted.
+- **Conversational Driving**: Form updates are performed exclusively by sending conversational instructions to the right-hand Chat Panel.
+- **Visual Feedback**: When the backend agent mutates specific form properties, those fields flash with a soft blue highlight animation (`.field-updated`) for seamless visual confirmation.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+---
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Codebase Layout
 
-### `npm test`
+```
+frontend/
+├── public/
+│   ├── index.html        # Main HTML entry point with premium meta headers
+│   └── favicon.ico       # Brand icon
+└── src/
+    ├── App.tsx           # Split-screen responsive layout wrapper & Redux setup
+    ├── types.ts          # Strongly typed definitions for FormState and API models
+    ├── index.css         # Tailwind directives, Google Inter font imports, and keyframe animations
+    ├── store/
+    │   ├── index.ts      # Redux store configuration
+    │   ├── formSlice.ts  # State controller managing form updates and animation triggers
+    │   └── chatSlice.ts  # State controller for messages, tool badges, and loading indicators
+    └── components/
+        ├── FormPanel.tsx # Left pane: displays disabled HCP, Visit, Products, and Notes state
+        └── ChatPanel.tsx # Right pane: conversational interface communicating with FastAPI
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## Core Components & Capabilities
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 1. State Management (`Redux Toolkit`)
+- **`formSlice`**: Holds the current values of all 12 form fields. Exposes actions to sync state returned by the `/chat` endpoint.
+- **`chatSlice`**: Appends rep messages and assistant responses. Integrates tool badge markers (e.g. `⚡ Log Interaction`, `⚡ Lookup HCP`) under assistant bubbles to clarify AI routing logic.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 2. Real-Time Highlight Animations
+To prevent the user from having to reread the entire form after an update, a custom CSS keyframe animation (`highlight-flash`) dynamically attaches to any input container whose value diverges from the previous state.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 3. Responsive Layout
+Utilizes CSS Flexbox and Tailwind grid layout utilities to present a clean 50/50 split on desktop screens while graceful stacking on narrower devices.
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Local Development Setup
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Prerequisites
+- Node.js version 18 or higher
+- The Backend FastAPI service running concurrently on port `8000`
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### Running the App
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+1. **Install Node Dependencies**
+   ```bash
+   npm install
+   ```
 
-## Learn More
+2. **Start the Local Development Server**
+   ```bash
+   npm start
+   ```
+   Open [http://localhost:3000](http://localhost:3000) to view the application in your browser. Live reloading is fully enabled.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+3. **Building for Production**
+   ```bash
+   npm run build
+   ```
+   Bundles optimized and minified static assets into the `build/` directory for deployment.

@@ -1,5 +1,9 @@
 # HCP Interaction Logger — AI-First CRM
 
+## Demo Video
+
+<video src="HCP%20AI%20-%20Keerthi%20Reddy.mp4" controls width="100%"></video>
+
 An AI-powered CRM screen for logging Healthcare Professional (HCP) interactions built as a Round 1 technical assignment. The form is **entirely AI-controlled** — no manual data entry is allowed. All form mutations happen exclusively through natural language commands sent to an AI chat powered by a LangGraph agent.
 
 ---
